@@ -3,7 +3,6 @@ sudo apt-get install -y unzip
 install nodejs npm
 curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 sudo apt-get install -y nodejs
-git clone https://github.com/jbclaramonte/todomvc-springboot.git
 cd ~/todomvc-springboot/static
 npm install
 install spring cli
