@@ -2,9 +2,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.bind.annotation.*
 import springfox.documentation.swagger2.annotations.EnableSwagger2
+
+import java.util.stream.Collectors
 //@Grab(group='org.springframework.data', module='spring-data-redis', version='1.6.2.RELEASE')
 @Grab(group='org.springframework.boot', module='spring-boot-starter-web', version='1.3.2.RELEASE')
 @Grab(group='org.springframework.boot', module='spring-boot-starter-redis', version='1.3.2.RELEASE')
@@ -51,34 +54,72 @@ class TodoRedisApi {
     @RequestMapping(path = "/todos", method = RequestMethod.POST)
     Todo write(@RequestBody Todo todo) {
         todo.id = System.currentTimeMillis()
-        String json = mapper.writeValueAsString(todo)
-
-        template.opsForList().leftPush("todos", json)
+        saveTodo(todo)
 
         return todo
     }
 
+    private void saveTodo(Todo todo) {
+        String json = mapper.writeValueAsString(todo)
+        HashOperations<String, String, String> opsForHash = template.opsForHash()
+        opsForHash.put("todos", todo.id, json)
+    }
+
     @RequestMapping(path = "/todos", method = RequestMethod.GET)
     List<Todo> readAll() {
-        def size = template.opsForList().size("todos")
-        return template.opsForList().range("todos", 0, size-1).stream()
-                .map { json -> mapper.readValue(json, Todo.class)}.collect()
+        return template.opsForHash().entries("todos").values().stream()
+                .map { json -> mapper.readValue(json, Todo.class)}
+                .collect(Collectors.toList())
     }
 
     @RequestMapping(path = "/todos/{id}", method = RequestMethod.GET)
     Todo read(@PathVariable String id) {
-        def size = template.opsForList().size("todos")
+        return getTodo(id)
+    }
 
-        return template.opsForList().range("todos", 0, size).stream()
-                .map { json -> mapper.readValue(json, Todo.class)}
-                .filter{ Todo todo -> todo.id == Long.valueOf(id) }
-                .findFirst().get()
+    private Todo getTodo(String id) {
+        return Optional.of(template.opsForHash().get("todos", id))
+                .map { json -> mapper.readValue(json, Todo.class) }
+                .get()
+    }
+
+    @RequestMapping(path = "/todos/{id}", method = RequestMethod.DELETE)
+    void delete(@PathVariable String id) {
+        deleteTodo(id)
+    }
+
+    private deleteTodo(String id) {
+        template.opsForHash().delete("todos", id)
+    }
+
+    @RequestMapping(path = "/todos/{id}", method = RequestMethod.PUT)
+    void update(@PathVariable String id) {
+        Optional.of(getTodo(id))
+                .map { todo -> todo.toggleCompleted() }
+                .ifPresent { todo -> saveTodo(todo) }
+    }
+
+    @RequestMapping(path = "/todos", method = RequestMethod.DELETE)
+    void clearCompleted() {
+        template.opsForHash().entries("todos").values().stream()
+                .map { json -> mapper.readValue(json, Todo.class) }
+                .filter { Todo todo -> todo.isCompleted() }
+                .forEach { todo -> deleteTodo(todo.id) }
     }
 
     public static class Todo {
-        Long id
+        String id
         String title
         boolean completed
+
+        Todo toggleCompleted() {
+            completed = !completed
+            return this;
+        }
+
+        boolean isCompleted() {
+            return completed
+        }
     }
 }
 
