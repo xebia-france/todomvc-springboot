@@ -1,6 +1,6 @@
 # todomvc-springboot
 
-## Run on a GCE
+## Run on GCE
 
 tutorial is available here :
 https://docs.google.com/document/d/1ZH1_a4hZ5DrVK5at9KvpjKBLV6Wp6BXrtuKkv3Kqm0g/pub
