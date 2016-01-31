@@ -38,7 +38,7 @@ You should have the Spring cli, you can install it easily
 ```bash
 # get the "Software Development Kit Manager" (sdkman) to install the cli
 curl -s http://get.sdkman.io | bash
-source "/home/jbclaramonte/.sdkman/bin/sdkman-init.sh"
+source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # install springboot cli using sdkman
 sdk install springboot
