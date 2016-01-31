@@ -16,7 +16,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 
 @RestController
-@RequestMapping("/apijdbc")
+@RequestMapping("/api")
 class TodoJdbcApi {
 
     Logger logger = LoggerFactory.getLogger(this.getClass())
