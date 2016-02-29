@@ -1,45 +1,80 @@
 # todomvc-springboot
 
-## Run on GCE
-
-tutorial is available here :
-https://docs.google.com/document/d/1ZH1_a4hZ5DrVK5at9KvpjKBLV6Wp6BXrtuKkv3Kqm0g/pub
-
-
-## Run locally (if you don't want to use GCE)
-You should have the Spring cli, you can install it easily
-
-```bash
-# get the "Software Development Kit Manager" (sdkman) to install the cli
-curl -s http://get.sdkman.io | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# install springboot cli using sdkman
-sdk install springboot
+#### Build the self executable jar
+```
+spring jar todomvc.jar **/*.groovy
 ```
 
-You should also have npm installed to install all the js dependency needed for the angularjs app
-
-```bash
-cd ~/todomvc-springboot/static
-npm install
+#### Reminder to build and push the dockerfile
+```
+docker build -t jbclaramonte/todomvc-springboot:kube-redis .
+docker push jbclaramonte/todomvc-springboot:kube-redis
 ```
 
-Once done you can run an instance of redis using docker:
 
-```bash
-docker run --name redis -d -p 6379:6379 redis
+## Run on Kubernetes with Google Container Engine
+
+Start a redis controller with one pods 
+
+```
+ kubectl run redis --image=redis
 ```
 
-Finally run the todomvc app:
+Expose redis pods as a service
 
-```bash
-spring run **/*.groovy -- --spring.redis.host=<redis ip here>
+```
+ kubectl expose rc/redis --port=6379 --target-port=6379
 ```
 
-Open http://localhost:8080
 
-You can also test the api using swagger with http://localhost:8080/swagger-ui.html 
+Start todomvc controller with one pods
+
+```
+ kubectl run todomvc --image=jbclaramonte/todomvc-springboot:redis
+```
+
+Open a shell terminal into the todomvc pod and check the env
+ 
+```
+ kubectl exec -it <pod name> bash
+```
+ 
+Type env command in the terminal, you should get something looking like this for the response:
+ 
+```
+REDIS_PORT_6379_TCP_PROTO=tcp
+HOSTNAME=todomvc-qaozd
+KUBERNETES_PORT=tcp://10.167.240.1:443
+KUBERNETES_PORT_443_TCP_PORT=443
+REDIS_SERVICE_PORT=6379
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_HOST=10.167.240.1
+REDIS_PORT_6379_TCP_ADDR=10.167.252.147
+CA_CERTIFICATES_JAVA_VERSION=20140324
+REDIS_PORT_6379_TCP_PORT=6379
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PWD=/
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+LANG=C.UTF-8
+JAVA_VERSION=8u72
+REDIS_PORT_6379_TCP=tcp://10.167.252.147:6379
+SHLVL=1
+HOME=/root
+JAVA_DEBIAN_VERSION=8u72-b15-1~bpo8+1
+REDIS_PORT=tcp://10.167.252.147:6379
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+REDIS_SERVICE_HOST=10.167.252.147
+KUBERNETES_PORT_443_TCP_ADDR=10.167.240.1
+KUBERNETES_PORT_443_TCP=tcp://10.167.240.1:443
+_=/usr/bin/env
+```
+
+> What is important to understand at this point is that the order used to create the different parts is essential : 
+> **if you create the todomvc pod BEFORE the redis service the REDIS env won't be available.**
 
 
+Update the deployed version of todomvc with a new one using _Rolling Update_
 
+```
+kubectl rolling-update todomvc --image=jbclaramonte/todomvc-springboot:redis
+```
