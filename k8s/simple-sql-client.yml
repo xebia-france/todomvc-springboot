@@ -1,0 +1,10 @@
+---
+  kind: Pod
+  apiVersion: v1
+  metadata:
+    name: simple-sql-client
+  spec:
+    containers:
+      - name: simple-sql-client
+        image: mysql
+        command: ['sleep', '10000000']
