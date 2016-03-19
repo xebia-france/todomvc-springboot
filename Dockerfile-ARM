@@ -1,4 +1,4 @@
-FROM java:8
+FROM hypriot/rpi-java:1.8.0
 
 # inspired by https://spring.io/guides/gs/spring-boot-docker/
 
