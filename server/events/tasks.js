@@ -32,7 +32,26 @@ export const watchTasks = (action): Function => {
   }
 }
 
+export const addTask = (action): Function => {
+  return (dispatch: Function): Promise => {
+    return RethinkDB.execute((r, conn) => {
+      action.payload.date = new Date().getTime()
+      return r.table('tasks')
+        .insert(action.payload)
+        .run(conn)
+        .then((result) => {
+          action.payload.id = result.generated_keys[0]
+          dispatch({
+            type: UPDATE_TASK,
+            payload: action.payload
+          })
+        })
+    })
+  }
+}
+
 export const actions = {
   [FETCH_TASKS]: fetchTasks,
-  [WATCH_TASKS]: watchTasks
+  [WATCH_TASKS]: watchTasks,
+  [ADD_TASK]: addTask
 }

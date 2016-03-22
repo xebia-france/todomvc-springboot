@@ -8,9 +8,15 @@ export class SocketIO {
     io.attach(app)
 
     io.on('disconnect', (ctx) => {
+      console.log('Client disconnected')
       if (ctx.cursors) {
         ctx.cursors.forEach((cursor) => cursor.close())
       }
+    })
+
+    io.on('connection', (ctx) => {
+      console.log('Client connected')
+      ctx.cursors = []
     })
 
     io.on('ACTION', (ctx, action) => {

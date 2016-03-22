@@ -1,7 +1,4 @@
 import r from 'rethinkdb'
-import fs from 'fs'
-import path from 'path'
-import * as serverInfo from './constants'
 
 export class RethinkDB {
 
@@ -31,7 +28,7 @@ export class RethinkDB {
   connect () {
     return r.connect({
       host: '172.16.39.128',
-      port: 32772,
+      port: 32769,
       db: 'todo'
     }).then((connection) => {
       this.connection = connection
