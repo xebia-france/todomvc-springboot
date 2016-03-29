@@ -20,7 +20,7 @@ items:
         db: rethinkdb
       name: rethinkdb-rc
     spec:
-      replicas: 3
+      replicas: 1
       selector:
         db: rethinkdb
         role: replicas
