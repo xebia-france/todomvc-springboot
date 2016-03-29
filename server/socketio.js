@@ -21,7 +21,9 @@ export class SocketIO {
 
     io.on('ACTION', (ctx, action) => {
       actions[action.type](action)((result, cursor) => {
-        ctx.socket.emit('ACTION', result)
+        if (result) {
+          ctx.socket.emit('ACTION', result)
+        }
         if (cursor) {
           if (!ctx.cursors) {
             ctx.cursors = []

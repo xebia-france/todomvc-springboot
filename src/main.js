@@ -8,9 +8,28 @@ import Root from './containers/Root'
 import configureStore from './redux/configureStore'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import rethinkdb from 'utils/rethinkdb'
+import moment from 'moment'
 
 injectTapEventPlugin()
 
+// Configure momentJS
+moment.updateLocale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s late',
+    s: 'seconds',
+    m: 'a minute',
+    mm: '%d minutes',
+    h: 'an hour',
+    hh: '%d hours',
+    d: 'a day',
+    dd: '%d days',
+    M: 'a month',
+    MM: '%d months',
+    y: 'a year',
+    yy: '%d years'
+  }
+})
 // Create redux store and sync with react-router-redux. We have installed the
 // react-router-redux reducer under the key "router" in src/routes/index.js,
 // so we need to provide a custom `selectLocationState` to inform

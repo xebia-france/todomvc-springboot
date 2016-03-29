@@ -1,7 +1,7 @@
 {
-  "name": "react-redux-starter-kit",
-  "version": "2.0.0-alpha.2",
-  "description": "Your new project",
+  "name": "todomvc-redux-rethinkdb",
+  "version": "1.0.0-alpha.1",
+  "description": "Redux + RethinkDB",
   "main": "index.js",
   "engines": {
     "node": ">=4.2.0",
@@ -59,9 +59,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davezuko/react-redux-starter-kit.git"
+    "url": "git+https://github.com/xebia-france/todomvc-springboot.git"
   },
-  "author": "David Zukowski <david@zuko.me> (http://zuko.me)",
+  "author": "Cedric Hauber",
   "license": "MIT",
   "dependencies": {
     "debug": "^2.2.0",
@@ -74,14 +74,22 @@
     "koa-socket": "^4.2.1",
     "koa-static": "^2.0.0",
     "material-ui": "^0.15.0-alpha.2",
+    "moment": "^2.12.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "react-redux": "^4.0.0",
     "react-router": "^2.0.0",
     "react-router-redux": "^4.0.0",
     "react-tap-event-plugin": "^0.2.2",
+    "react-time": "^4.0.0",
+    "reconsider": "^1.0.2",
     "redux": "^3.0.0",
-    "redux-thunk": "^2.0.0"
+    "redux-thunk": "^2.0.0",
+    "request": "^2.69.0",
+    "rethinkdb": "^2.2.2",
+    "rethinkdbdash": "^2.2.18",
+    "socket.io": "^1.4.5",
+    "socket.io-client": "^1.4.5"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
@@ -89,11 +97,11 @@
     "babel-eslint": "^6.0.0-beta.6",
     "babel-loader": "^6.2.0",
     "babel-plugin-react-transform": "^2.0.0",
+    "babel-plugin-syntax-class-properties": "^6.5.0",
+    "babel-plugin-transform-class-properties": "^6.6.0",
     "babel-plugin-transform-react-constant-elements": "^6.5.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.2.2",
     "babel-plugin-transform-runtime": "^6.3.13",
-    "babel-plugin-syntax-class-properties": "^6.5.0",
-    "babel-plugin-transform-class-properties": "^6.6.0",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
@@ -113,7 +121,7 @@
     "eslint-config-standard-react": "^2.2.0",
     "eslint-loader": "^1.1.1",
     "eslint-plugin-babel": "^3.0.0",
-    "eslint-plugin-flow-vars": "^0.2.0",
+    "eslint-plugin-flow-vars": "^0.2.1",
     "eslint-plugin-promise": "^1.0.8",
     "eslint-plugin-react": "^4.0.0",
     "eslint-plugin-standard": "^1.3.1",

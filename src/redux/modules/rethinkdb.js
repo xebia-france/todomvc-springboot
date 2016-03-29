@@ -1,5 +1,5 @@
 import RethinkDB from 'utils/rethinkdb'
-import { DISPATCH_RETHINKDB, RECEIVE_RETHINKDB } from 'constants/rethinkdb'
+import { DISPATCH_RETHINKDB, RECEIVE_RETHINKDB } from '../../../constants/rethinkdb'
 
 export const dispatch = (action): Action => {
   return {

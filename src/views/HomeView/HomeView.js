@@ -1,4 +1,3 @@
-/* @flow */
 import React from 'react'
 import Tasks from 'containers/Tasks'
 import Paper from 'material-ui/lib/paper'

@@ -1,24 +1,25 @@
 import r from 'rethinkdb'
+import rethinkdb from 'rethinkdbdash'
+import Reconsider from 'reconsider'
+
+const RETHINKDB_CONN = {
+  host: process.env.RETHINKDB_DRIVER_SERVICE_HOST || 'rethinkdb',
+  port: process.env.RETHINKDB_DRIVER_SERVICE_PORT || 28015,
+  db: 'todo'
+}
 
 export class RethinkDB {
 
-  init (conn) {
+  init () {
     console.log('RethinkDB migration')
-    r.dbList().run(conn, (err, dbs) => {
-      if (!dbs.includes('todo')) {
-        console.log('Creating toolbox database')
-        r.dbCreate('todo').run(conn)
-      }
-      r.tableList().run(conn, (err, result) => {
-        ['tasks'].forEach((table) => {
-          if (!result.includes(table)) {
-            console.log('Creating table', table)
-            r.tableCreate(table).run(conn)
-          }
-        })
+    const r = rethinkdb(RETHINKDB_CONN)
+    var recon = new Reconsider(r, { db: RETHINKDB_CONN.db })
+    return recon.migrateUp()
+      .then((ops) => console.dir(ops))
+      .catch((err) => {
+        console.log(err)
+        recon.migrateDown().then((ops) => console.dir(ops))
       })
-    })
-    console.log('RethinkDB migration done')
   }
 
   execute (cb) {
@@ -26,14 +27,9 @@ export class RethinkDB {
   }
 
   connect () {
-    return r.connect({
-      host: '172.16.39.128',
-      port: 32769,
-      db: 'todo'
-    }).then((connection) => {
+    return this.init().then(() => r.connect(RETHINKDB_CONN)).then((connection) => {
       this.connection = connection
       console.log('RethinkDB connected')
-      this.init(connection)
     })
   }
 

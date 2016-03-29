@@ -1,12 +1,6 @@
 import {dispatch as r} from 'redux/modules/rethinkdb'
 import Immutable from 'immutable'
-import { FETCH_TASKS, WATCH_TASKS, UPDATE_TASK, ADD_TASK } from 'constants/tasks'
-
-export const fetchTasks = (): Action => {
-  return r({
-    type: FETCH_TASKS
-  })
-}
+import { COMPLETE_TASK, FETCH_TASKS, WATCH_TASKS, UPDATE_TASK, ADD_TASK, DELETE_TASK } from '../../../constants/tasks'
 
 export const addTask = (task): Action => {
   return r({
@@ -21,23 +15,45 @@ export const watchTasks = (): Action => {
   })
 }
 
+export const deleteTask = (task): Action => {
+  return r({
+    type: DELETE_TASK,
+    payload: task
+  })
+}
+
+export const completeTask = (task): Action => {
+  return r({
+    type: COMPLETE_TASK,
+    payload: task
+  })
+}
+
 // Action Creators
 export const actions = {
-  fetchTasks,
   watchTasks,
-  addTask
+  addTask,
+  deleteTask,
+  completeTask
 }
 
 // Action Handlers
 const ACTION_HANDLERS = {
   [FETCH_TASKS]: (state: array, action: {payload: array}): array => Immutable.List(action.payload).sort((a, b) => b.date - a.date),
-  [UPDATE_TASK]: (state: array, action: {payload: array}): array => {
+  [UPDATE_TASK]: (state: array, action: {payload: object}): array => {
     var index = state.findIndex((existingTask) => existingTask.id === action.payload.id)
     if (index !== -1) {
       state = state.delete(index)
     }
     state = state.insert(0, action.payload)
-    return Immutable.List(state).sort((a, b) => b.date - a.date)
+    return state.sort((a, b) => b.date - a.date)
+  },
+  [DELETE_TASK]: (state: array, action: {payload: object}): array => {
+    var index = state.findIndex((existingTask) => existingTask.id === action.payload.id)
+    if (index !== -1) {
+      state = state.delete(index)
+    }
+    return state.sort((a, b) => b.date - a.date)
   }
 }
 
