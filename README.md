@@ -2,12 +2,25 @@
 
 ## Run on GCE
 
-tutorial is available here :
-https://docs.google.com/document/d/1ZH1_a4hZ5DrVK5at9KvpjKBLV6Wp6BXrtuKkv3Kqm0g/pub
+gcloud container clusters create cluster-todo --zone=europe-west1-b
+kubectl create -f kubernetes/rethinkdb.yaml
 
+When the rethinkdb replication-controller is ready :
+kubectl scale rc rethinkdb-rc --replicas=3
+
+Then:
+
+kubectl create -f kubernetes/app.yaml
+
+When the app is ready
+kubectl scale rc todo-rc --replicas=3
 
 ## Run locally (if you don't want to use GCE)
-You should have the Spring cli, you can install it easily
+
+You must have a rethinkdb installed
+
+npm install
+npm run dev
 
 Open http://localhost:3000
 
