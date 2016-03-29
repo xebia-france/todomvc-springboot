@@ -35,7 +35,7 @@ items:
             imagePullPolicy: Always
             env:
             - name: REPLICAS
-              value: 2
+              value: "2"
             ports:
             - containerPort: 3000
               name: web
