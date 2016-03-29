@@ -1,11 +1,11 @@
 export function up (r, logger) {
+  const REPLICAS = parseInt(process.env.REPLICAS || '1')
   return Promise.all(['tasks'].map((tableName) => {
     logger.verbose(`Creating table ${tableName}.`)
-
-    return r.tableCreate(tableName, {replicas: process.env.REPLICAS || 1}).run()
+    return r.tableCreate(tableName, {replicas: REPLICAS}).run()
   })).then(() => {
     logger.verbose('Reconfigure migration table replicas')
-    return r.table('_reconsider_migration').reconfigure({shards: 1, replicas: process.env.REPLICAS || 1})
+    return r.table('_reconsider_migration').reconfigure({shards: 1, replicas: REPLICAS})
   })
 }
 
