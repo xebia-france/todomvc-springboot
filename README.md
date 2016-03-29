@@ -8,7 +8,7 @@ kubectl create -f kubernetes/rethinkdb.yaml
 
 When the rethinkdb replication-controller is ready:
 
-kubectl scale rc rethinkdb-rc --replicas=3
+kubectl scale rc rethinkdb-rc --replicas=4
 
 Then:
 
