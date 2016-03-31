@@ -34,7 +34,7 @@ kubectl run redis --image=hypriot/rpi-redis
 Expose redis pods as a service
 
 ```
-kubectl expose rc/redis --port=6379 --target-port=6379
+kubectl expose rs/<replace-with-redis-replicaset> --port=6379 --target-port=6379
 ```
 
 
@@ -48,6 +48,10 @@ kubectl run todomvc --image=jbclaramonte/todomvc-springboot:kube-redis
 ```
 # for ARM target
 kubectl run todomvc --image=jbclaramonte/todomvc-springboot:kube-redis-arm
+```
+
+```
+kubectl expose rs todomvc-2671799798 --port 80 --target-port 8080 --type=LoadBalancer
 ```
 
 Open a shell terminal into the todomvc pod and check the env
