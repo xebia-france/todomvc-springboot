@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:3.0.7
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+          - name: redis-persistent-storage
+            mountPath: /data
+      volumes:
+        - name: redis-persistent-storage
+          gcePersistentDisk:
+            # This disk must already exist.
+            pdName: redis-disk
+            fsType: ext4
